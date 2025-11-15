@@ -32,7 +32,7 @@ module fifo #(
 
 	//Write Operation
 	always_ff @(posedge clk or negedge rst) begin
-		if (rst) begin
+		if (!rst) begin
 			wptr <= 0;
 		end else begin
 			if (wr_en && !full) begin
@@ -45,7 +45,7 @@ module fifo #(
 
 	//Read Operation
 	always_ff @(posedge clk or negedge rst) begin
-		if (rst) begin
+		if (!rst) begin
 			rptr <= 0;
 		end else begin
 			if (rd_en && !empty) begin
@@ -59,7 +59,7 @@ module fifo #(
 	//Tracking what the last operation was to determine if FIFO 
 	//is empty or full (in both cases rptr =  wptr)
 	always_ff @(posedge clk or negedge rst) begin
-		if (rst) begin
+		if (!rst) begin
 			last_op <= 1'b1;
 		end else begin
 			if (rd_en && !empty) begin

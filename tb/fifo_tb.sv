@@ -35,13 +35,14 @@ module fifo_tb;
 
 	//setting reset
 	initial begin
-		//rst   = 1;
 		rst   = 1;
+		#5
+		rst   = 0; //reset triggered
 		wr_en = 0;
 		rd_en = 0;
 		wdata = 0;
-		#10
-		rst = 0;
+		#5
+		rst = 1;
 	end
 
 	//TEST 1 - SIMPLE CASE
@@ -57,11 +58,11 @@ module fifo_tb;
 		wr_en = 1'b0;
 
 		// Try writing one more word to test full
-    /*@(posedge clk);
+    @(posedge clk);
     wdata = 99;
     wr_en = 1;
     @(posedge clk);
-    wr_en = 0;*/
+    wr_en = 0;
 
     // Read all data
     for (int i = 0; i < DEPTH; i++) begin
@@ -72,10 +73,28 @@ module fifo_tb;
     rd_en = 0;
 
     // Try reading one more to test empty
-    /*@(posedge clk);
+    @(posedge clk);
     rd_en = 1;
     @(posedge clk);
-    rd_en = 0;*/
+    rd_en = 0;
+		#5
+
+		// checking reset
+		rst = 0;
+		#5
+		rst = 1;
+		//write
+		@(posedge clk);
+    wdata = 99;
+    wr_en = 1;
+    @(posedge clk);
+    wr_en = 0;
+		//read
+		@(posedge clk);
+    rd_en = 1;
+    @(posedge clk);
+    //rd_en = 0;
+
 		$finish;
   end
 
