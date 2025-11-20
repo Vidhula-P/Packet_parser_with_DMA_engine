@@ -74,27 +74,49 @@ module parser_tb;
 		@(posedge clk); // wait one clock cycle
 
     // Prepare headers 
-    eth_hdr = 128'hA1A1A1A1A1A1A1A1A1A1A1A1A1A1A1A1; //the header was 14B but was padded by (pretend) software driver
-		ip_hdr = 160'hB2B2B2B2B2B2B2B2B2B2B2B2B2B2B2B2B2B2B2B2; 
-		tcp_hdr = 160'hC3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3; 
-		payload = 320'hD4F40099D4F40099D4F40099D4F40099D4F40099D4F40099D4F40099D4F40099D4F40099D4F40099;
+    eth_hdr = 128'h8F3A_9C12_7BD4_E6A0_55CC_11AA_4490_7F3E;
+		ip_hdr  = 160'h0011_2233_4455_6677_8899_AABB_CCDD_EEFF_0011_2233; 
+		tcp_hdr = 160'hFFEE_DDCC_BBAA_9988_7766_5544_3322_1100_FFEE_DDCC; 
+		payload = 320'h0123_4567_89AB_CDEF_0123_4567_89AB_CDEF_0123_4567_89AB_CDEF_0123_4567_89AB_CDEF_0123_4567_89AB_CDEF;
 
     full_data = {eth_hdr, ip_hdr, tcp_hdr, payload};
 		//$display("Full data- %h", full_data);
 		// Send MSB → LSB (matches the parser shift order)
    	for (int i = 767; i >= 0; i -= 32) begin
       send_word(full_data[i-:32]);  // part-select from i downto i-31
-			$display("Word sent in testbench- %032h", full_data[i-:32]);
+			$display("Word sent in testbench- %h", full_data[i-:32]);
     end
 
     // Give time for parser to finish PAYLOAD
     repeat (10) @(posedge clk);
 
     $display("---- Parser Internal Headers ----");
-    $display("ETH:     %032h", dut.ethernet_header);
-    $display("IP :     %040h", dut.ip_header);
-    $display("TCP:     %040h", dut.tcp_header);
-    $display("PAYLOAD: %080h", dut.payload_data);
+    $display("ETH:     %h", dut.ethernet_header);
+    $display("IP :     %h", dut.ip_header);
+    $display("TCP:     %h", dut.tcp_header);
+    //$display("PAYLOAD: %080h", dut.payload_data);
+
+		eth_hdr = 128'hA1A1A1A1A1A1A1A1A1A1A1A1A1A1A1A1;
+		ip_hdr = 160'hB2B2B2B2B2B2B2B2B2B2B2B2B2B2B2B2B2B2B2B2; 
+		tcp_hdr = 160'hC3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3; 
+		payload = 320'hD4F40099D4F40099D4F40099D4F40099D4F40099D4F40099D4F40099D4F40099D4F40099D4F40099;
+
+		full_data = {eth_hdr, ip_hdr, tcp_hdr, payload};
+
+		//$display("Full data- %h", full_data);
+		// Send MSB → LSB (matches the parser shift order)
+   	for (int i = 767; i >= 0; i -= 32) begin
+      send_word(full_data[i-:32]);  // part-select from i downto i-31
+			$display("Word sent in testbench- %h", full_data[i-:32]);
+    end
+
+    // Give time for parser to finish PAYLOAD
+    repeat (10) @(posedge clk);
+
+    $display("---- Parser Internal Headers ----");
+    $display("ETH:     %h", dut.ethernet_header);
+    $display("IP :     %h", dut.ip_header);
+    $display("TCP:     %h", dut.tcp_header);
 		
 		@(posedge clk);
     $finish;
