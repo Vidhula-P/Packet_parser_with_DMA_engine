@@ -38,7 +38,6 @@ module fifo #(
 			if (wr_en && !full) begin
 				mem[wptr] <= wdata;
 				wptr 			<= wptr + 1'b1;
-				$display("Write pointer- %h", wptr);
 			end
 		end
 	end
@@ -50,7 +49,6 @@ module fifo #(
 		end else begin
 			if (rd_en && !empty) begin
 				rptr 	<= rptr + 1'b1; //since non-blocking assign
-				$display("Read pointer- %h", rptr);
 				rdata <= mem[rptr]; 	//old value of rptr is considered
 			end
 		end
